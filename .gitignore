@@ -1,0 +1,18 @@
+
+.idea/
+wp-config.php
+.htaccess
+# ignore everything in the "wp-content" directory, except:
+# "mu-plugins", "plugins", "themes" directory
+wp-content/uploads
+
+# ignore these plugins
+wp-content/plugins/hello.php
+
+# ignore node dependency directories
+node_modules/
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite

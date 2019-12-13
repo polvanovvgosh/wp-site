@@ -1,0 +1,22 @@
+/*
+Theme name: Storefront child
+Theme URL: #
+Author: Igor
+Author URL: #
+Template: storefront
+Versions: 1.0
+ */
+.footer-navigation li{
+    display: inline-block;
+    padding: 0 1em 0 0;
+}
+.footer-navigation ul {
+    display: block;
+    text-align: center;
+}
+
+.exchange-rates-table {
+    width: 25em;
+    display: block;
+    margin: auto;
+}
