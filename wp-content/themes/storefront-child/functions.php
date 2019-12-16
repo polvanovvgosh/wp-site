@@ -33,8 +33,6 @@ add_filter('storefront_products_per_page', 'alter_sf_products_per_page');
 add_filter('loop_shop_per_page', 'new_loop_shop_per_page', 20);
 function new_loop_shop_per_page($cols)
 {
-    // $cols contains the current number of products per page based on the value stored on Options -> Reading
-    // Return the number of products you wanna show per page.
     $cols = 3;
 
     return $cols;
@@ -105,12 +103,20 @@ function register_my_widgets()
     );
 }
 
-add_filter( 'cron_schedules', 'alt_cron_interval');
-function alt_cron_interval( $schedule ) {
-    $schedule['every_3_min'] = array(
+add_filter('cron_schedules', 'alt_cron_interval');
+function alt_cron_interval($schedule)
+{
+    $schedule['every_3_min'] = [
         'interval' => 180,
-        'display' => 'Every three minutes'
-    );
+        'display'  => 'Every three minutes',
+    ];
+
     return $schedule;
 }
 
+add_action('admin_enqueue_scripts', 'atl_adds_custom_styles');
+function atl_adds_custom_styles()
+{
+    wp_register_style('admin-style', get_stylesheet_directory_uri().'/admin-style.css');
+    wp_enqueue_style('admin-style', get_stylesheet_directory_uri().'/admin-style.css');
+}

@@ -75,15 +75,11 @@ class exchange_widget extends WP_Widget
 
         $rates = $wpdb->get_results('select * from wp_exchange_rates order by id desc limit 4');
 
-        $first_rate  = date('j.n.Y', mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-        $second_rate = date('j.n.Y', mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")));
-        if ((int)(date('j') % 2)) {
-            $first_rate  = date('j.n.Y', mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
-            $second_rate = date('j.n.Y', mktime(0, 0, 0, date("m"), date("d"), date("Y")));
-        }
+        $first_rate  = date('j.n.Y', mktime(0, 0, 0, date("m"), date("d") - 1, date("Y")));
+        $second_rate = date('j.n.Y');
 
         echo '<table class="exchange-rates-table">'.
-            '<thead class="exchange-rates-table">'.
+            '<thead>'.
             '<tr>'.
             '<td>Валюта</td>'.
             '<td>'.$first_rate.'</td>'.
@@ -91,7 +87,7 @@ class exchange_widget extends WP_Widget
             '<td>Разница</td>'.
             '</tr>'.
             '</thead>'.
-            '<tbody   class="exchange-rates-table">';
+            '<tbody>';
         foreach ($rates as $rate) {
             echo '<tr>'.
                 '<td>'.$rate->currency.'</td>'.

@@ -1,7 +1,7 @@
 /*
 Theme name: Storefront child
 Theme URL: #
-Author: Igor
+Author: Polvanov Igor
 Author URL: #
 Template: storefront
 Versions: 1.0
@@ -19,4 +19,42 @@ Versions: 1.0
     width: 25em;
     display: block;
     margin: auto;
+}
+.car-photo {
+    width: 30em;
+    margin: 1em 1em 1em 0;
+    float: left;
+}
+.car-single-image {
+    height: 20em;
+}
+
+.book-single-image {
+    height: 20em;
+}
+.car-field {
+    margin: 0;
+}
+
+.car-comments-form {
+    width: 40em;
+    margin-left: -3em;
+}
+
+.list-item {
+    width: 30em;
+    margin-right: 2em;
+    float: left;
+}
+.book-cover {
+    height: 30em;
+    margin-right: 2em;
+    float: left;
+}
+
+.book-field {
+    margin: 0;
+}
+.purchase-book {
+    margin-top: 2em;
 }
