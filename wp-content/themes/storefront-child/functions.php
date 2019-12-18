@@ -5,12 +5,10 @@ add_action('after_setup_theme', 'alt_removes_action');
 function alt_removes_action()
 {
     remove_action('storefront_header', 'storefront_secondary_navigation', 30);
-
     remove_action('homepage', 'storefront_on_sale_products', 60);
 
 }
 
-add_action('woocommerce_before_main_content', 'art_move_storefront_secondary_navigation', 10);
 
 add_filter('storefront_product_categories_args', 'art_homepage_product_categories', 20, 1);
 function art_homepage_product_categories($arg)
