@@ -8,9 +8,15 @@ global $post;
     <p class="book-field">Цена: <?php the_field('book_cost'); ?> руб.</p>
 </div>
 
+
 <div class="car-comments-form">
     <?php comments_template(); ?>
 </div>
-
+<?php
+if (have_posts()) {
+    the_post();
+    the_content();
+}
+?>
 
 <?php get_footer(); ?>
