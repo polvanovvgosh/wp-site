@@ -44,6 +44,7 @@ namespace :deploy do
      on roles :all do
         execute :ln, "-s  #{shared_path}/.htaccess #{release_path}/.htaccess"
         execute :ln, "-s  #{shared_path}/wp-config.php #{release_path}/wp-config.php"
+        execute :ln, "-s  #{shared_path}/uploads #{release_path}/wp-content/uploads"
         end
     end
 end
