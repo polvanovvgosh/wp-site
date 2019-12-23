@@ -9,6 +9,15 @@ function alt_removes_action()
 
 }
 
+function my_acf_google_map_api( $api ){
+
+    $api['key'] = 'AIzaSyC728jq3e_oIgK3SWWathYg__zGsoTY8EQ';
+
+    return $api;
+
+}
+
+add_filter('acf/fields/google_map/api', 'my_acf_google_map_api');
 
 add_filter('storefront_product_categories_args', 'art_homepage_product_categories', 20, 1);
 function art_homepage_product_categories($arg)
