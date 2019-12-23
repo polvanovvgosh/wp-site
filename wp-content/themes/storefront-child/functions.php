@@ -127,3 +127,11 @@ function atl_adds_custom_styles()
     wp_register_style('admin-style', get_stylesheet_directory_uri().'/admin-style.css');
     wp_enqueue_style('admin-style', get_stylesheet_directory_uri().'/admin-style.css');
 }
+
+add_action( 'wp_enqueue_scripts', 'alt_scripts_basic' );
+
+function alt_scripts_basic ()
+{
+    wp_register_script('custom-script', get_stylesheet_directory_uri().'/js/custom-script.js');
+    wp_enqueue_script('custom-script', get_stylesheet_directory_uri().'/js/custom-script.js');
+}
