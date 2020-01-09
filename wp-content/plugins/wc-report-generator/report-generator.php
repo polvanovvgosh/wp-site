@@ -10,6 +10,9 @@ add_action('get_report_data', 'get_orders_data');
 
 register_activation_hook(__FILE__, 'set_cron_schedule');
 
+/**
+ * Runs a script daily
+ */
 function set_cron_schedule()
 {
     if (!wp_next_scheduled('get_report_data')) {
@@ -17,6 +20,11 @@ function set_cron_schedule()
     }
 }
 
+/**
+ * Get orders data from Db
+ *
+ * @return array|object|null
+ */
 function get_orders_data()
 {
     global $wpdb;
@@ -29,6 +37,12 @@ function get_orders_data()
     return $results;
 }
 
+/**
+ * Save data from database in Xmlx file
+ *
+ * @throws \PhpOffice\PhpSpreadsheet\Exception
+ * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+ */
 function save_report_to_file()
 {
     $orders = get_orders_data();
