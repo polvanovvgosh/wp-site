@@ -17,19 +17,47 @@ function set_cron_schedule()
     }
 }
 
-add_action('storefront_before_footer', 'get_orders_data');
-
 function get_orders_data()
 {
     global $wpdb;
-
     $results = $wpdb->get_results(
         'select * from wp_wc_order_stats 
         join wp_wc_customer_lookup 
         on wp_wc_order_stats.customer_id = wp_wc_customer_lookup.customer_id '
     );
 
-    var_dump($results);
     return $results;
+}
+
+function save_report_to_file()
+{
+    $orders = get_orders_data();
+    if (defined('CBXPHPSPREADSHEET_PLUGIN_NAME') && file_exists(CBXPHPSPREADSHEET_ROOT_PATH.'lib/vendor/autoload.php')) {
+
+        require_once(CBXPHPSPREADSHEET_ROOT_PATH.'lib/vendor/autoload.php');
+
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+    }
+
+    foreach ($orders as $orderKey => $order) {
+        $sheet = $spreadsheet->getActiveSheet();
+        $key = $orderKey + 1;
+        $sheet->setCellValue('A'.$key, $order->order_id );
+        $sheet->setCellValue('B'.$key, $order->date_created);
+        $sheet->setCellValue('C'.$key, $order->num_items_sold);
+        $sheet->setCellValue('D'.$key, $order->net_total);
+        $sheet->setCellValue('E'.$key, $order->user_id);
+        $sheet->setCellValue('F'.$key, $order->username);
+        $sheet->setCellValue('G'.$key, $order->first_name);
+        $sheet->setCellValue('H'.$key, $order->last_name);
+        $sheet->setCellValue('I'.$key, $order->email);
+        $sheet->setCellValue('J'.$key, $order->country);
+        $sheet->setCellValue('K'.$key, $order->postcode);
+        $sheet->setCellValue('L'.$key, $order->city);
+        $sheet->setCellValue('M'.$key, $order->state);
+    }
+
+    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+    $writer->save( wp_get_upload_dir()['basedir'] . '/orders/'.date('c').'.xlsx');
 
 }
