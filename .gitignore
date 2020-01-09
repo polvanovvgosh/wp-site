@@ -16,3 +16,6 @@ node_modules/
 *.log
 *.sql
 *.sqlite
+
+wp-content/plugins/google-api/client_secret_922551308385-m8bfrgcnqk16vtvjun85ue0db14v5oc2.apps.googleusercontent.com.json
+wp-content/plugins/google-api/token.json
