@@ -1,0 +1,15 @@
+{
+    "name": "google/google-apis",
+    "description": "trying to use google apis in woordpress",
+    "type": "plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Igor Polvanov",
+            "email": "polvanovv@gmail.com"
+        }
+    ],
+    "require": {
+        "google/apiclient": "^2.0"
+    }
+}
