@@ -15,13 +15,15 @@ require __DIR__.'/vendor/autoload.php';
 function getClient()
 {
     $client = new Google_Client();
-    $client->setApplicationName('google-web-client');
-    $client->setScopes(Google_Service_Drive::DRIVE_METADATA_READONLY);
-    $client->setAuthConfig(__DIR__. '/client_secret_922551308385-m8bfrgcnqk16vtvjun85ue0db14v5oc2.apps.googleusercontent.com.json');
+    $client->setApplicationName('wordpress-site');
+    $client->setScopes(Google_Service_Drive::DRIVE);
+    $client->setAuthConfig(
+        __DIR__.'/client_secret_922551308385-m8bfrgcnqk16vtvjun85ue0db14v5oc2.apps.googleusercontent.com.json'
+    );
     $client->setAccessType('offline');
     $client->setPrompt('select_account consent');
 
-    $tokenPath = __DIR__ . '/token.json';
+    $tokenPath = __DIR__.'/token.json';
     if (file_exists($tokenPath)) {
         $accessToken = json_decode(file_get_contents($tokenPath), true);
         $client->setAccessToken($accessToken);
@@ -48,18 +50,43 @@ function getClient()
         }
         file_put_contents($tokenPath, json_encode($client->getAccessToken()));
     }
+
     return $client;
 }
 
+$ordersDir = wp_get_upload_dir()['basedir'].'/orders/';
 
-$client = getClient();
+
+$client  = getClient();
 $service = new Google_Service_Drive($client);
 
-$optParams = array(
-    'pageSize' => 5,
-    'fields' => 'nextPageToken, files(id, name)'
-);
-$results = $service->files->listFiles($optParams);
+function uploadOrders($ordersDir, $service)
+{
+    $orders = glob($ordersDir.'*');
+    foreach ($orders as $order) {
+        $fileMetadata = new Google_Service_Drive_DriveFile(['name' => basename($order)]);
+        $content      = file_get_contents($order);
+        $service->files->create(
+            $fileMetadata,
+            [
+                'data'       => $content,
+                'mimeType'   => 'application/vnd.ms-excel',
+                'uploadType' => 'multipart',
+                'fields'     => 'id',
+            ]
+        );
+    }
+
+}
+
+uploadOrders($ordersDir, $service);
+
+
+$optParams = [
+    'pageSize' => 10,
+    'fields'   => 'nextPageToken, files(id, name)',
+];
+$results   = $service->files->listFiles($optParams);
 
 if (count($results->getFiles()) == 0) {
     print "No files found.\n";
@@ -67,14 +94,15 @@ if (count($results->getFiles()) == 0) {
     echo '<ul>';
     print "Files:";
     foreach ($results->getFiles() as $file) {
-    printf("<li> %s (%s) </li>", $file->getName(), $file->getId());
+        printf("<li> %s (%s) </li>", $file->getName(), $file->getId());
     }
     echo '</ul>';
 }
 
-function clear() {
-    if (file_exists(wp_get_upload_dir()['basedir']. '/orders/')) {
-        foreach (glob('/orders/*') as $file) {
+function clearOrders($ordersDir)
+{
+    if (file_exists($ordersDir)) {
+        foreach (glob($ordersDir.'*') as $file) {
             unlink($file);
         }
     }
