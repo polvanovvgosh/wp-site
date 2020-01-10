@@ -7,6 +7,15 @@
 
 require __DIR__.'/vendor/autoload.php';
 
+add_action('upload_report_data', 'uploadOrders');
+
+function set_cron_schedule()
+{
+    if (!wp_next_scheduled('upload_report_data')) {
+        wp_schedule_event(time(), 'daily', 'upload_report_data');
+    }
+}
+
 /**
  * Returns an authorized API client.
  *
@@ -56,7 +65,6 @@ function getClient()
 
 $ordersDir = wp_get_upload_dir()['basedir'].'/orders/';
 
-
 $client  = getClient();
 $service = new Google_Service_Drive($client);
 
@@ -77,26 +85,6 @@ function uploadOrders($ordersDir, $service)
         );
     }
 
-}
-
-uploadOrders($ordersDir, $service);
-
-
-$optParams = [
-    'pageSize' => 10,
-    'fields'   => 'nextPageToken, files(id, name)',
-];
-$results   = $service->files->listFiles($optParams);
-
-if (count($results->getFiles()) == 0) {
-    print "No files found.\n";
-} else {
-    echo '<ul>';
-    print "Files:";
-    foreach ($results->getFiles() as $file) {
-        printf("<li> %s (%s) </li>", $file->getName(), $file->getId());
-    }
-    echo '</ul>';
 }
 
 function clearOrders($ordersDir)
