@@ -37,6 +37,8 @@ function get_orders_data()
     return $results;
 }
 
+add_action('after_setup_theme', 'save_report_to_file');
+
 /**
  * Save data from database in Xmlx file
  *
@@ -46,7 +48,9 @@ function get_orders_data()
 function save_report_to_file()
 {
     $orders = get_orders_data();
-    if (defined('CBXPHPSPREADSHEET_PLUGIN_NAME') && file_exists(CBXPHPSPREADSHEET_ROOT_PATH.'lib/vendor/autoload.php')) {
+    if (defined('CBXPHPSPREADSHEET_PLUGIN_NAME') && file_exists(
+            CBXPHPSPREADSHEET_ROOT_PATH.'lib/vendor/autoload.php'
+        )) {
 
         require_once(CBXPHPSPREADSHEET_ROOT_PATH.'lib/vendor/autoload.php');
 
@@ -54,24 +58,39 @@ function save_report_to_file()
     }
 
     foreach ($orders as $orderKey => $order) {
+      $text = implode( PHP_EOL ,get_items_data($order));
         $sheet = $spreadsheet->getActiveSheet();
-        $key = $orderKey + 1;
-        $sheet->setCellValue('A'.$key, $order->order_id );
+        $key   = $orderKey + 1;
+        $sheet->setCellValue('A'.$key, $order->order_id);
         $sheet->setCellValue('B'.$key, $order->date_created);
         $sheet->setCellValue('C'.$key, $order->num_items_sold);
+        $sheet->getComment('C'.$key)
+            ->getText()->createText($text);
         $sheet->setCellValue('D'.$key, $order->net_total);
-        $sheet->setCellValue('E'.$key, $order->user_id);
-        $sheet->setCellValue('F'.$key, $order->username);
-        $sheet->setCellValue('G'.$key, $order->first_name);
-        $sheet->setCellValue('H'.$key, $order->last_name);
-        $sheet->setCellValue('I'.$key, $order->email);
-        $sheet->setCellValue('J'.$key, $order->country);
-        $sheet->setCellValue('K'.$key, $order->postcode);
-        $sheet->setCellValue('L'.$key, $order->city);
-        $sheet->setCellValue('M'.$key, $order->state);
+        $sheet->getComment('D'.$key)
+            ->getText()->createText('Total amount on the current invoice, excluding VAT.');
+        $sheet->setCellValue('E'.$key, $order->first_name);
+        $sheet->setCellValue('F'.$key, $order->last_name);
+        $sheet->setCellValue('G'.$key, $order->email);
+        $sheet->setCellValue('H'.$key, $order->country);
+        $sheet->setCellValue('I'.$key, $order->postcode);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        $writer->save(wp_get_upload_dir()['basedir'].'/orders/'.date('c').'.xlsx');
     }
 
-    $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-    $writer->save( wp_get_upload_dir()['basedir'] . '/orders/'.date('c').'.xlsx');
+}
 
+function get_items_data($order)
+{
+    global $wpdb;
+    $orderItems = $wpdb->get_results(
+        'select * from wp_wc_order_product_lookup where order_id ='.$order->order_id
+    );
+    $text = [];
+    foreach ($orderItems as $item) {
+        $text [] = 'Product id - '. $item->product_id . PHP_EOL .
+            'Cost - '. $item->product_net_revenue;
+    }
+    return $text;
 }
