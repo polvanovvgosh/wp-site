@@ -37,6 +37,21 @@ function get_orders_data()
     return $results;
 }
 
+/**
+ * Get items data from Db
+ *
+ * @return array|object|null
+ */
+function get_items_data()
+{
+    global $wpdb;
+    return $wpdb->get_results(
+        'SELECT product_id, product_net_revenue , COUNT(product_id) as products_sum, product_net_revenue * COUNT(product_id) as net_sum 
+        FROM wp_wc_order_product_lookup
+        GROUP BY product_id'
+    );
+}
+
 add_action('after_setup_theme', 'save_report_to_file');
 
 /**
@@ -48,6 +63,7 @@ add_action('after_setup_theme', 'save_report_to_file');
 function save_report_to_file()
 {
     $orders = get_orders_data();
+    $items = get_items_data();
     if (defined('CBXPHPSPREADSHEET_PLUGIN_NAME') && file_exists(
             CBXPHPSPREADSHEET_ROOT_PATH.'lib/vendor/autoload.php'
         )) {
@@ -58,39 +74,39 @@ function save_report_to_file()
     }
 
     foreach ($orders as $orderKey => $order) {
-      $text = implode( PHP_EOL ,get_items_data($order));
+
+        $spreadsheet->setActiveSheetIndex(0);
         $sheet = $spreadsheet->getActiveSheet();
         $key   = $orderKey + 1;
+
         $sheet->setCellValue('A'.$key, $order->order_id);
         $sheet->setCellValue('B'.$key, $order->date_created);
+        $sheet->getColumnDimension('B')->setAutoSize(true);
         $sheet->setCellValue('C'.$key, $order->num_items_sold);
-        $sheet->getComment('C'.$key)
-            ->getText()->createText($text);
         $sheet->setCellValue('D'.$key, $order->net_total);
-        $sheet->getComment('D'.$key)
-            ->getText()->createText('Total amount on the current invoice, excluding VAT.');
         $sheet->setCellValue('E'.$key, $order->first_name);
         $sheet->setCellValue('F'.$key, $order->last_name);
         $sheet->setCellValue('G'.$key, $order->email);
+        $sheet->getColumnDimension('G')->setAutoSize(true);
         $sheet->setCellValue('H'.$key, $order->country);
         $sheet->setCellValue('I'.$key, $order->postcode);
+    }
+
+    $spreadsheet->createSheet();
+    foreach ($items as $itemKey => $item) {
+        $spreadsheet->setActiveSheetIndex(1);
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $key = $itemKey + 1;
+        $sheet->setCellValue('A'.$key, $item->product_id);
+        $sheet->setCellValue('B'.$key, $item->product_net_revenue);
+        $sheet->setCellValue('C'.$key, $item->products_sum);
+        $sheet->setCellValue('D'.$key, $item->net_sum);
+    }
+        $cell = $key + 1;
+        $sheet->setCellValue('D'.$cell, '=SUM(D1:D'.$key.')');
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         $writer->save(wp_get_upload_dir()['basedir'].'/orders/'.date('c').'.xlsx');
-    }
-
 }
 
-function get_items_data($order)
-{
-    global $wpdb;
-    $orderItems = $wpdb->get_results(
-        'select * from wp_wc_order_product_lookup where order_id ='.$order->order_id
-    );
-    $text = [];
-    foreach ($orderItems as $item) {
-        $text [] = 'Product id - '. $item->product_id . PHP_EOL .
-            'Cost - '. $item->product_net_revenue;
-    }
-    return $text;
-}
