@@ -8,8 +8,9 @@
 require __DIR__.'/vendor/autoload.php';
 
 add_action('upload_report_data', 'uploadOrders');
+register_activation_hook(__FILE__, 'set_cron_schedule_google_api');
 
-function set_cron_schedule()
+function set_cron_schedule_google_api()
 {
     if (!wp_next_scheduled('upload_report_data')) {
         wp_schedule_event(time(), 'daily', 'upload_report_data');
@@ -85,6 +86,7 @@ function uploadOrders($ordersDir, $service)
         );
     }
 
+    clearOrders($ordersDir);
 }
 
 function clearOrders($ordersDir)
