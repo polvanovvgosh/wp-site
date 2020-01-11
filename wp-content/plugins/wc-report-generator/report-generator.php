@@ -6,7 +6,7 @@
  * Version: 1.0
  */
 
-add_action('get_report_data', 'get_orders_data');
+add_action('get_report_data', 'save_report_to_file');
 
 register_activation_hook(__FILE__, 'set_cron_schedule');
 
@@ -51,8 +51,6 @@ function get_items_data()
         GROUP BY product_id'
     );
 }
-
-add_action('after_setup_theme', 'save_report_to_file');
 
 /**
  * Save data from database in Xmlx file
