@@ -7,13 +7,13 @@
 
 require __DIR__.'/vendor/autoload.php';
 
-add_action('upload_report_data', 'uploadOrders');
+add_action('upload_report_data', 'uploadOrders', 10, 2);
 register_activation_hook(__FILE__, 'set_cron_schedule_google_api');
 
 function set_cron_schedule_google_api()
 {
     if (!wp_next_scheduled('upload_report_data')) {
-        wp_schedule_event(time(), 'daily', 'upload_report_data');
+        wp_schedule_event(time(), 'twicedaily', 'upload_report_data');
     }
 }
 
@@ -64,14 +64,13 @@ function getClient()
     return $client;
 }
 
-$ordersDir = wp_get_upload_dir()['basedir'].'/orders/';
+function uploadOrders() {
 
-$client  = getClient();
-$service = new Google_Service_Drive($client);
-
-function uploadOrders($ordersDir, $service)
-{
+    $ordersDir = wp_get_upload_dir()['basedir'].'/orders/';
+    $client  = getClient();
+    $service = new Google_Service_Drive($client);
     $orders = glob($ordersDir.'*');
+
     foreach ($orders as $order) {
         $fileMetadata = new Google_Service_Drive_DriveFile(['name' => basename($order)]);
         $content      = file_get_contents($order);
@@ -85,12 +84,9 @@ function uploadOrders($ordersDir, $service)
             ]
         );
     }
-
-    clearOrders($ordersDir);
 }
 
-function clearOrders($ordersDir)
-{
+function clearOrders($ordersDir) {
     if (file_exists($ordersDir)) {
         foreach (glob($ordersDir.'*') as $file) {
             unlink($file);
