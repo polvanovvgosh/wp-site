@@ -14,7 +14,7 @@ register_activation_hook(__FILE__, 'set_cron_schedule_report_generator');
 function set_cron_schedule_report_generator()
 {
     if (!wp_next_scheduled('get_report_data')) {
-        wp_schedule_event(time(), 'daily', 'get_report_data');
+        wp_schedule_event(time(), 'twicedaily', 'get_report_data');
     }
 }
 
