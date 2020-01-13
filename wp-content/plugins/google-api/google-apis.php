@@ -4,8 +4,9 @@
  * Description: Allow to use google api's to write backend in wordpress
  * Version: 1.0
  */
-
+require_once  __DIR__. '/admin/admin.php';
 require __DIR__.'/vendor/autoload.php';
+
 
 add_action('upload_report_data', 'uploadOrders', 10, 2);
 register_activation_hook(__FILE__, 'set_cron_schedule_google_api');
@@ -66,7 +67,10 @@ function getClient()
 
 function uploadOrders() {
 
-    $ordersDir = wp_get_upload_dir()['basedir'].'/orders/';
+    $allOptions = get_option('google_api_options');
+    $ordersDir = $allOptions['folder'];
+    $ordersDir = wp_get_upload_dir()['basedir'] . $ordersDir ;
+
     $client  = getClient();
     $service = new Google_Service_Drive($client);
     $orders = glob($ordersDir.'*');
@@ -84,6 +88,7 @@ function uploadOrders() {
             ]
         );
     }
+    clearOrders($ordersDir);
 }
 
 function clearOrders($ordersDir) {
