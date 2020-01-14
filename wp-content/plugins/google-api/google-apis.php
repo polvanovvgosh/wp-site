@@ -7,6 +7,11 @@
 require_once  __DIR__. '/admin/admin.php';
 require __DIR__.'/vendor/autoload.php';
 
+add_action( 'plugins_loaded', 'googleapi_load_plugin_textdomain' );
+
+function googleapi_load_plugin_textdomain() {
+    load_plugin_textdomain( 'googleapi', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
 
 add_action('upload_report_data', 'uploadOrders', 10, 2);
 register_activation_hook(__FILE__, 'set_cron_schedule_google_api');

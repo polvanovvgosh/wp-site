@@ -21,7 +21,10 @@ function alt_removes_action()
  */
 function my_acf_google_map_api( $api ){
 
-    $api['key'] = 'AIzaSyC728jq3e_oIgK3SWWathYg__zGsoTY8EQ';
+    $allOptions = get_option('google_api_options');
+    $apiKey = $allOptions['api_key'];
+
+    $api['key'] = $apiKey;
 
     return $api;
 
