@@ -8,7 +8,6 @@ global $post;
     <p class="book-field"><?php echo __('Price'); ?>: <?php the_field('book_cost'); ?> руб.</p>
 </div>
 
-
 <div class="car-comments-form">
     <?php comments_template(); ?>
 </div>
