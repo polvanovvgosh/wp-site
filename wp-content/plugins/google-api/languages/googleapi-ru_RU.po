@@ -1,0 +1,27 @@
+# Translation of WordPress - 5.3.x - Development in Russian
+# This file is distributed under the same license as the WordPress - 5.3.x - Development package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2020-01-13 17:18+0600\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.2.4\n"
+"Language: ru\n"
+"Project-Id-Version: WordPress - 5.3.x - Development\n"
+"POT-Creation-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+
+msgid "Folder name"
+msgstr "Название файла"
+
+msgid "Google Api Options"
+msgstr "Параметры Google Api"
+
+msgid "Text fields"
+msgstr "Текстовые поля"
+
+msgid "Specify the name of the order folder. Example: \"/orders/\" "
+msgstr "Укажите название папки с заказами. Пример: \"/orders/\""
