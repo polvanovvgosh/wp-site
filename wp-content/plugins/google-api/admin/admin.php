@@ -16,7 +16,7 @@ function option_page()
     global $true_page;
     ?>
     <div class="wrap">
-    <h2>Google Api Options</h2>
+    <h2><?php echo __('Google Api Options', 'googleapi'); ?></h2>
     <form method="post" enctype="multipart/form-data" action="options.php">
         <?php
         settings_fields('google_api_options');
@@ -35,23 +35,38 @@ function option_settings()
 
     register_setting('google_api_options', 'google_api_options');
 
-    add_settings_section('true_section_1', 'Text fields', '', $true_page);
+    add_settings_section('true_section_1', __('Text fields', 'googleapi'), '', $true_page);
 
     $params = [
         'type' => 'text',
         'id' => 'folder',
-        'desc' => 'Specify the name of the order folder. Example: "/orders/" ',
+        'desc' => __('Specify the name of the order folder. Example: "/orders/" ', 'googleapi'),
         'label_for' => 'folder'
     ];
     add_settings_field(
         'my_text_field',
-        'Folder name',
+        __('Folder name', 'googleapi'),
         'option_display_settings',
         $true_page,
         'true_section_1',
         $params
     );
 
+    $params = [
+        'type' => 'text',
+        'id' => 'api_key',
+        'desc' => __('', 'googleapi'),
+        'label_for' => 'api_key'
+    ];
+
+    add_settings_field(
+            'api_key',
+        __('Google Api key', 'googleapi'),
+        'option_display_settings',
+        $true_page,
+        'true_section_1',
+        $params
+    );
 
 }
 
