@@ -5,7 +5,7 @@ global $post;
 <div>
     <p class="book-field"><?php echo __('Author:'); ?>  <?php the_field('book_author'); ?></p>
     <p class="book-field"><?php echo __('Pages:'); ?> <?php the_field('boot_pages'); ?></p>
-    <p class="book-field"><?php echo __('Comment'); ?>: <?php the_field('book_cost'); ?> руб.</p>
+    <p class="book-field"><?php echo __('Price'); ?>: <?php the_field('book_cost'); ?> руб.</p>
 </div>
 
 
