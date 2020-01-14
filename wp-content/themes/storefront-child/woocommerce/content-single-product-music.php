@@ -57,7 +57,6 @@ if ( post_password_required() ) {
          * @hooked woocommerce_template_single_sharing - 50
          * @hooked WC_Structured_Data::generate_product_data() - 60
          */
-//        remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt' , 20);
         remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_rating' , 10);
         remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta' , 40);
         add_action('woocommerce_single_product_summary', 'woocommerce_template_single_meta' , 7);
@@ -73,8 +72,6 @@ if ( post_password_required() ) {
      * @hooked woocommerce_upsell_display - 15
      * @hooked woocommerce_output_related_products - 20
      */
-
-
     remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_related_products' , 20);
     do_action( 'woocommerce_after_single_product_summary' );
     ?>
